@@ -16,8 +16,8 @@ class BreedImagesViewController: UIViewController {
         let collectionView: UICollectionView = {
             let layout = UICollectionViewFlowLayout()
             layout.scrollDirection = .vertical
-            layout.minimumLineSpacing = 10
-            layout.minimumInteritemSpacing = 10
+            layout.minimumLineSpacing = 5
+            layout.minimumInteritemSpacing = 5
             let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
             collectionView.translatesAutoresizingMaskIntoConstraints = false
             collectionView.backgroundColor = .white
@@ -42,8 +42,8 @@ extension BreedImagesViewController {
             view.addSubview(collectionView)
             NSLayoutConstraint.activate([
                 collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-                collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
+                collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5),
                 collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
             ])
         }
@@ -113,7 +113,7 @@ extension BreedImagesViewController: UICollectionViewDataSource, UICollectionVie
     
     // Set size for collection view cell
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (collectionView.bounds.width - 30) / 2 // Adjust spacing
+        let width = (collectionView.bounds.width - 5) / 2 // Adjust spacing
         return CGSize(width: width, height: width)
     }
     
