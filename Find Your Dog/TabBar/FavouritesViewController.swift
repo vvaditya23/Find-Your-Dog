@@ -11,6 +11,7 @@ class FavouritesViewController: UIViewController {
 
     var likedImages: [String] = [] // Array to store liked image URLs
     
+    let noDataLabel = UILabel()
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -29,12 +30,13 @@ class FavouritesViewController: UIViewController {
 //        fetchLikedImages()
 //        print(likedImages)
         setupCollectionView()
+        setupNoDataLabel()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         fetchLikedImages()
     }
-
+    
     /*
     // MARK: - Navigation
 
@@ -62,6 +64,15 @@ extension FavouritesViewController {
                 collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
             ])
         }
+    
+    func setupNoDataLabel() {
+        view.addSubview(noDataLabel)
+        noDataLabel.translatesAutoresizingMaskIntoConstraints = false
+        noDataLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        noDataLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        noDataLabel.numberOfLines = 0
+        noDataLabel.text = "No favourites, checkout some breeds"
+    }
 }
 
 //fetch data
@@ -72,6 +83,7 @@ extension FavouritesViewController {
                 likedImages = likedImagesArray
             }
         collectionView.reloadData()
+        noDataLabel.isHidden = !likedImages.isEmpty
             // Here, you can optionally filter or sort the liked images based on breed
             // For simplicity, let's assume the likedImages array is already sorted or filtered
             displayLikedImages()    //not required
