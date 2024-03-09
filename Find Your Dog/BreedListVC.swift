@@ -64,6 +64,8 @@ extension BreedListVC {
                 if let jsonData = json as? [String: Any],
                    let breedsJSON = jsonData["message"] as? [String: Any] {
                     self.breedsArray = breedsJSON.keys.map { Breed(name: $0) }
+                    // Sort breeds alphabetically
+                    self.breedsArray.sort { $0.name < $1.name }
                     DispatchQueue.main.async {
                         //on successful data fetch put it on-screen
                         self.breedListTableView.reloadData()
