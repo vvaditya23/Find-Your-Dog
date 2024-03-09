@@ -16,11 +16,40 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: scene as! UIWindowScene)
-        let nav = UINavigationController(rootViewController: BreedListViewController())
-        window?.rootViewController = nav
-        window?.makeKeyAndVisible()
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+//        window = UIWindow(windowScene: scene as! UIWindowScene)
+//        let nav = UINavigationController(rootViewController: BreedListViewController())
+//        window?.rootViewController = nav
+//        window?.makeKeyAndVisible()
+        let tabBarController = UITabBarController()
+            
+            let breedsViewController = BreedListViewController()
+            let favouritesViewController = FavouritesViewController()
+            
+        // Set titles for the view controllers
+        breedsViewController.title = "Breeds"
+        favouritesViewController.title = "Favourites"
+
+        // Create icons
+        let breedsIcon = UIImage(systemName: "dog.fill")
+        let favouritesIcon = UIImage(systemName: "heart.fill")
+
+        // Set tab bar items with custom titles and icons
+        ///title comes from view controller title during runtime
+        breedsViewController.tabBarItem = UITabBarItem(title: "Choose a breed", image: breedsIcon, selectedImage: breedsIcon)
+        favouritesViewController.tabBarItem = UITabBarItem(title: "Favourites", image: favouritesIcon, selectedImage: favouritesIcon)
+        
+            let breedsNavigationController = UINavigationController(rootViewController: breedsViewController)
+            let favouritesNavigationController = UINavigationController(rootViewController: favouritesViewController)
+            
+            tabBarController.viewControllers = [breedsNavigationController, favouritesNavigationController]
+        
+        tabBarController.tabBar.tintColor = .black
+        
+            let window = UIWindow(windowScene: windowScene)
+            window.rootViewController = tabBarController
+            window.makeKeyAndVisible()
+            self.window = window
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

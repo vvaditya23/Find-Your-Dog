@@ -17,6 +17,8 @@
 		48649A7C2B9C5DAE009F6F5C /* BreedImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A7B2B9C5DAE009F6F5C /* BreedImagesViewController.swift */; };
 		48649A802B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A7F2B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift */; };
 		48649A822B9C665C009F6F5C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A812B9C665C009F6F5C /* Extensions.swift */; };
+		48649A862B9C71E2009F6F5C /* FavouritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A852B9C71E2009F6F5C /* FavouritesViewController.swift */; };
+		48649A882B9C7212009F6F5C /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A872B9C7212009F6F5C /* TabBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +34,8 @@
 		48649A7B2B9C5DAE009F6F5C /* BreedImagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedImagesViewController.swift; sourceTree = "<group>"; };
 		48649A7F2B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		48649A812B9C665C009F6F5C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		48649A852B9C71E2009F6F5C /* FavouritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesViewController.swift; sourceTree = "<group>"; };
+		48649A872B9C7212009F6F5C /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,11 +70,10 @@
 			children = (
 				48649A622B9C403A009F6F5C /* AppDelegate.swift */,
 				48649A642B9C403A009F6F5C /* SceneDelegate.swift */,
-				48649A662B9C403A009F6F5C /* BreedListViewController.swift */,
-				48649A7B2B9C5DAE009F6F5C /* BreedImagesViewController.swift */,
-				48649A7F2B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift */,
-				48649A812B9C665C009F6F5C /* Extensions.swift */,
+				48649A832B9C71A0009F6F5C /* TabBar */,
+				48649A842B9C71AC009F6F5C /* Breed-wise images display */,
 				48649A782B9C4467009F6F5C /* Model */,
+				48649A812B9C665C009F6F5C /* Extensions.swift */,
 				48649A682B9C403A009F6F5C /* Main.storyboard */,
 				48649A6B2B9C403C009F6F5C /* Assets.xcassets */,
 				48649A6D2B9C403C009F6F5C /* LaunchScreen.storyboard */,
@@ -85,6 +88,25 @@
 				48649A762B9C444B009F6F5C /* BreedName.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		48649A832B9C71A0009F6F5C /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				48649A872B9C7212009F6F5C /* TabBarController.swift */,
+				48649A662B9C403A009F6F5C /* BreedListViewController.swift */,
+				48649A852B9C71E2009F6F5C /* FavouritesViewController.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
+		48649A842B9C71AC009F6F5C /* Breed-wise images display */ = {
+			isa = PBXGroup;
+			children = (
+				48649A7B2B9C5DAE009F6F5C /* BreedImagesViewController.swift */,
+				48649A7F2B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift */,
+			);
+			path = "Breed-wise images display";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -158,8 +180,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48649A862B9C71E2009F6F5C /* FavouritesViewController.swift in Sources */,
 				48649A7C2B9C5DAE009F6F5C /* BreedImagesViewController.swift in Sources */,
 				48649A772B9C444C009F6F5C /* BreedName.swift in Sources */,
+				48649A882B9C7212009F6F5C /* TabBarController.swift in Sources */,
 				48649A802B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift in Sources */,
 				48649A822B9C665C009F6F5C /* Extensions.swift in Sources */,
 				48649A672B9C403A009F6F5C /* BreedListViewController.swift in Sources */,
