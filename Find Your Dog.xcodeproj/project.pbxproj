@@ -16,6 +16,8 @@
 		48649A772B9C444C009F6F5C /* BreedName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A762B9C444B009F6F5C /* BreedName.swift */; };
 		48649A7C2B9C5DAE009F6F5C /* BreedImagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A7B2B9C5DAE009F6F5C /* BreedImagesViewController.swift */; };
 		48649A7E2B9C5E2B009F6F5C /* BreedImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A7D2B9C5E2B009F6F5C /* BreedImages.swift */; };
+		48649A802B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A7F2B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift */; };
+		48649A822B9C665C009F6F5C /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48649A812B9C665C009F6F5C /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +32,8 @@
 		48649A762B9C444B009F6F5C /* BreedName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedName.swift; sourceTree = "<group>"; };
 		48649A7B2B9C5DAE009F6F5C /* BreedImagesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedImagesViewController.swift; sourceTree = "<group>"; };
 		48649A7D2B9C5E2B009F6F5C /* BreedImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedImages.swift; sourceTree = "<group>"; };
+		48649A7F2B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreedImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		48649A812B9C665C009F6F5C /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +70,8 @@
 				48649A642B9C403A009F6F5C /* SceneDelegate.swift */,
 				48649A662B9C403A009F6F5C /* BreedListViewController.swift */,
 				48649A7B2B9C5DAE009F6F5C /* BreedImagesViewController.swift */,
+				48649A7F2B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift */,
+				48649A812B9C665C009F6F5C /* Extensions.swift */,
 				48649A782B9C4467009F6F5C /* Model */,
 				48649A682B9C403A009F6F5C /* Main.storyboard */,
 				48649A6B2B9C403C009F6F5C /* Assets.xcassets */,
@@ -157,6 +163,8 @@
 			files = (
 				48649A7C2B9C5DAE009F6F5C /* BreedImagesViewController.swift in Sources */,
 				48649A772B9C444C009F6F5C /* BreedName.swift in Sources */,
+				48649A802B9C64A5009F6F5C /* BreedImageCollectionViewCell.swift in Sources */,
+				48649A822B9C665C009F6F5C /* Extensions.swift in Sources */,
 				48649A7E2B9C5E2B009F6F5C /* BreedImages.swift in Sources */,
 				48649A672B9C403A009F6F5C /* BreedListViewController.swift in Sources */,
 				48649A632B9C403A009F6F5C /* AppDelegate.swift in Sources */,
