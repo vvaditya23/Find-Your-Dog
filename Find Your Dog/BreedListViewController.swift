@@ -7,7 +7,7 @@
 
 import UIKit
 
-class BreedListVC: UIViewController {
+class BreedListViewController: UIViewController {
     //used to add to navigation controller
     let VC = UIViewController()
     let breedListTableView = UITableView()
@@ -18,7 +18,7 @@ class BreedListVC: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .white
         //display large title on nav bar
-        title = "Storm Viewer"
+        title = "Choose a breed"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         let navigationController = UINavigationController(rootViewController: VC)
@@ -33,7 +33,7 @@ class BreedListVC: UIViewController {
 }
 
 //UI config
-extension BreedListVC {
+extension BreedListViewController {
     func setupBreedsTableView() {
         breedListTableView.dataSource = self
         breedListTableView.delegate = self
@@ -51,7 +51,7 @@ extension BreedListVC {
 }
 
 //fetch data
-extension BreedListVC {
+extension BreedListViewController {
     func fetchBreeds() {
         guard let url = URL(string: "https://dog.ceo/api/breeds/list/all") else {
             print("Invalid URL")
@@ -92,7 +92,7 @@ extension BreedListVC {
 }
 
 //tableview config
-extension BreedListVC: UITableViewDelegate, UITableViewDataSource {
+extension BreedListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         breedsArray.count
     }
@@ -101,6 +101,8 @@ extension BreedListVC: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BreedCell", for: indexPath)
         let breed = breedsArray[indexPath.row]
         cell.textLabel?.text = breed.name
+        
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
     
