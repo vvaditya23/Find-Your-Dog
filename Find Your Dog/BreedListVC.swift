@@ -8,15 +8,27 @@
 import UIKit
 
 class BreedListVC: UIViewController {
-
+    //used to add to navigation controller
+    let VC = UIViewController()
     let breedListTableView = UITableView()
     
     var breedsArray: [Breed] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .white
+        //display large title on nav bar
+        title = "Storm Viewer"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        let navigationController = UINavigationController(rootViewController: VC)
+        
         setupBreedsTableView()
         fetchBreeds()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        navigationController?.hidesBarsOnTap = false
     }
 }
 
@@ -92,18 +104,18 @@ extension BreedListVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: breedListTableView.frame.width, height: 50))
-        headerView.backgroundColor = .lightGray
-        
-        let headerTitle = UILabel(frame: CGRect(x: 15, y: 10, width: breedListTableView.frame.width, height: 30))
-        headerTitle.text = "Choose a breed"
-        headerTitle.font = UIFont.boldSystemFont(ofSize: 18)
-        
-        headerView.addSubview(headerTitle)
-        return headerView
-    }
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 50
-    }
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: breedListTableView.frame.width, height: 50))
+//        headerView.backgroundColor = .lightGray
+//        
+//        let headerTitle = UILabel(frame: CGRect(x: 15, y: 10, width: breedListTableView.frame.width, height: 30))
+//        headerTitle.text = "Choose a breed"
+//        headerTitle.font = UIFont.boldSystemFont(ofSize: 18)
+//        
+//        headerView.addSubview(headerTitle)
+//        return headerView
+//    }
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return 50
+//    }
 }
