@@ -133,7 +133,12 @@ extension FavouritesViewController {
     @objc func filterSwitchValueChanged(_ sender: UISwitch) {
             pickerView.isUserInteractionEnabled = sender.isOn
             pickerView.alpha = sender.isOn ? 1.0 : 0.5
+        if !sender.isOn {
+                collectionView.reloadData()
+        } else {
+            collectionView.reloadData()
         }
+    }
 }
 
 //fetch data
@@ -193,29 +198,59 @@ extension FavouritesViewController {
 //collectionview config.
 extension FavouritesViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return likedImages.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! BreedImageCollectionViewCell
-        // Extract key-value pair at the current index
-        let keyValue = Array(likedImages)[indexPath.item]
-                
-        // Extract image URL and breed name
-        let imageUrl = keyValue.key
-//        print("url: \(imageUrl)")
-        let breedName = keyValue.value
-//        print("breed: \(breedName)")
-                
-        // Set the breed name as the title of the cell
-        cell.titleLabel.text = breedName
-                
-        // Load image from URL
-        cell.imageView.loadImage(from: imageUrl)
+            if filterSwitch.isOn {
+                // If filter is enabled, only count the number of liked images that match the selected breed
+                let selectedBreedIndex = pickerView.selectedRow(inComponent: 0)
+                let selectedBreed = breedData[selectedBreedIndex].name
+                return likedImages.values.filter { $0 == selectedBreed }.count
+            } else {
+                // If filter is disabled, return the total count of liked images
+                return likedImages.count
+            }
+        }
         
-        cell.likeButton.isHidden = true
-        return cell
-    }
+        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! BreedImageCollectionViewCell
+            
+            if filterSwitch.isOn {
+                // If filter is enabled, only display images of the selected breed
+                let selectedBreedIndex = pickerView.selectedRow(inComponent: 0)
+                let selectedBreed = breedData[selectedBreedIndex].name
+                let likedImagesArray = Array(likedImages.values)
+                let filteredImages = likedImagesArray.filter { $0 == selectedBreed }
+                
+                // Get the breed name and image URL at the current index
+                let breedName = filteredImages[indexPath.item]
+                let imageUrl = likedImages.first { $0.value == breedName }?.key
+                
+                // Set the breed name as the title of the cell
+                cell.titleLabel.text = breedName
+                    
+                // Load image from URL
+                if let imageUrl = imageUrl {
+                    cell.imageView.loadImage(from: imageUrl)
+                }
+                if filteredImages.isEmpty {
+                    noDataLabel.isHidden = false
+                }
+            } else {
+                // If filter is disabled, display all the liked images
+                let keyValue = Array(likedImages)[indexPath.item]
+                        
+                // Extract image URL and breed name
+                let imageUrl = keyValue.key
+                let breedName = keyValue.value
+                            
+                // Set the breed name as the title of the cell
+                cell.titleLabel.text = breedName
+                        
+                // Load image from URL
+                cell.imageView.loadImage(from: imageUrl)
+            }
+            
+            cell.likeButton.isHidden = true
+            return cell
+        }
     
     // Set size for collection view cell
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -238,8 +273,11 @@ extension FavouritesViewController: UIPickerViewDataSource, UIPickerViewDelegate
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        let selectedBreed = breedData[row]
-        print("Selected breed: \(selectedBreed)")
+        if filterSwitch.isOn {
+                    collectionView.reloadData()
+                }
+                let selectedBreed = breedData[row]
+//        print("Selected breed: \(selectedBreed)")
         // Implement logic to filter collection view data based on selected breed
     }
 }
