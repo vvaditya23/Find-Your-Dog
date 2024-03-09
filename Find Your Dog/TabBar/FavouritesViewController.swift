@@ -34,7 +34,12 @@ class FavouritesViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        UserDefaults.standard.set(true, forKey: "ShouldShowTitle")
         fetchLikedImages()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        UserDefaults.standard.set(false, forKey: "ShouldShowTitle")
     }
     
     /*
@@ -119,7 +124,7 @@ extension FavouritesViewController: UICollectionViewDataSource, UICollectionView
 //        print("breed: \(breedName)")
                 
         // Set the breed name as the title of the cell
-//        cell.titleLabel.text = breedName
+        cell.titleLabel.text = breedName
                 
         // Load image from URL
         cell.imageView.loadImage(from: imageUrl)
