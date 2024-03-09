@@ -91,4 +91,19 @@ extension BreedListVC: UITableViewDelegate, UITableViewDataSource {
         cell.textLabel?.text = breed.name
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: breedListTableView.frame.width, height: 50))
+        headerView.backgroundColor = .lightGray
+        
+        let headerTitle = UILabel(frame: CGRect(x: 15, y: 10, width: breedListTableView.frame.width, height: 30))
+        headerTitle.text = "Choose a breed"
+        headerTitle.font = UIFont.boldSystemFont(ofSize: 18)
+        
+        headerView.addSubview(headerTitle)
+        return headerView
+    }
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50
+    }
 }
