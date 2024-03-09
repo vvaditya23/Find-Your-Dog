@@ -8,36 +8,17 @@
 import UIKit
 
 class BreedImageCollectionViewCell: UICollectionViewCell {
-    let imageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-    }()
     
-    let likeButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(systemName: "heart"), for: .normal)
-        button.setImage(UIImage(systemName: "heart.fill"), for: .selected)
-        button.tintColor = .red
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
+    let imageView = UIImageView()
+    let likeButton = UIButton(type: .custom)
     let titleLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        titleLabel.textColor = .black
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.textAlignment = .center
-        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-        
-        contentView.addSubview(imageView)
-        contentView.addSubview(likeButton)
-        contentView.addSubview(titleLabel)
+        setupImageView()
+        setupLikeButton()
+        setupTitlelabel()
         
         if UserDefaults.standard.bool(forKey: "ShouldShowTitle") {
             NSLayoutConstraint.activate([
@@ -67,6 +48,29 @@ class BreedImageCollectionViewCell: UICollectionViewCell {
                 likeButton.heightAnchor.constraint(equalToConstant: 30)
             ])
         }
+    }
+    
+    func setupImageView() {
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(imageView)
+    }
+    
+    func setupLikeButton() {
+        likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        likeButton.setImage(UIImage(systemName: "heart.fill"), for: .selected)
+        likeButton.tintColor = .red
+        likeButton.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(likeButton)
+    }
+    
+    func setupTitlelabel() {
+        titleLabel.textColor = .black
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(titleLabel)
     }
     
     required init?(coder: NSCoder) {

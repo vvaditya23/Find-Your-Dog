@@ -12,13 +12,11 @@ class BreedListViewController: UIViewController {
     let VC = UIViewController()
     let breedListTableView = UITableView()
     
-    let favVC = FavouritesViewController()
-    
     var breedsArray: [BreedName] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         //display large title on nav bar
         title = "Choose a breed"
         navigationController?.navigationBar.prefersLargeTitles = true
@@ -34,7 +32,7 @@ class BreedListViewController: UIViewController {
     }
 }
 
-//UI config
+//MARK: - UI config.
 extension BreedListViewController {
     func setupBreedsTableView() {
         breedListTableView.dataSource = self
@@ -52,7 +50,7 @@ extension BreedListViewController {
     }
 }
 
-//fetch data
+//MARK: - fetch data
 extension BreedListViewController {
     func fetchBreeds() {
         guard let url = URL(string: "https://dog.ceo/api/breeds/list/all") else {
@@ -81,11 +79,10 @@ extension BreedListViewController {
                     // Sort breeds alphabetically
                     self.breedsArray.sort { $0.name < $1.name }
                     DispatchQueue.main.async {
-//                        self.favVC.breedData = self.breedsArray
+                        //                        self.favVC.breedData = self.breedsArray
                         //on successful data fetch put it on-screen
                         self.breedListTableView.reloadData()
-//                        print(self.breedsArray)
-                        
+                        //                        print(self.breedsArray)
                     }
                 }
             } catch {
@@ -95,7 +92,7 @@ extension BreedListViewController {
     }
 }
 
-//tableview config
+//MARK: - tableview config.
 extension BreedListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         breedsArray.count
@@ -111,31 +108,29 @@ extension BreedListViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            let selectedBreedName = breedsArray[indexPath.row].name
-//            print("Selected breed: \(selectedBreedName)")
-            
-            // Instantiate BreedImagesViewController
-            let breedImagesVC = BreedImagesViewController()
-            
-            // Pass selected breed name to BreedImagesViewController
-            breedImagesVC.breedName = selectedBreedName
-            
-            // Push BreedImagesViewController onto navigation stack
-            navigationController?.pushViewController(breedImagesVC, animated: true)
-        }
+        let selectedBreedName = breedsArray[indexPath.row].name
+        //            print("Selected breed: \(selectedBreedName)")
+        
+        // Pass selected breed name to BreedImagesViewController
+        let breedImagesVC = BreedImagesViewController()
+        breedImagesVC.breedName = selectedBreedName
+        
+        // Push BreedImagesViewController onto navigation stack
+        navigationController?.pushViewController(breedImagesVC, animated: true)
+    }
     
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: breedListTableView.frame.width, height: 50))
-//        headerView.backgroundColor = .lightGray
-//        
-//        let headerTitle = UILabel(frame: CGRect(x: 15, y: 10, width: breedListTableView.frame.width, height: 30))
-//        headerTitle.text = "Choose a breed"
-//        headerTitle.font = UIFont.boldSystemFont(ofSize: 18)
-//        
-//        headerView.addSubview(headerTitle)
-//        return headerView
-//    }
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return 50
-//    }
+    //    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    //        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: breedListTableView.frame.width, height: 50))
+    //        headerView.backgroundColor = .lightGray
+    //
+    //        let headerTitle = UILabel(frame: CGRect(x: 15, y: 10, width: breedListTableView.frame.width, height: 30))
+    //        headerTitle.text = "Choose a breed"
+    //        headerTitle.font = UIFont.boldSystemFont(ofSize: 18)
+    //
+    //        headerView.addSubview(headerTitle)
+    //        return headerView
+    //    }
+    //    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    //        return 50
+    //    }
 }

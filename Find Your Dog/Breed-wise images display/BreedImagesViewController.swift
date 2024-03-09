@@ -8,21 +8,21 @@
 import UIKit
 
 class BreedImagesViewController: UIViewController {
-
-    var breedName: String = "" // Stores selected breed name
-    var breedImagesArray: [String] = [] // Array to store breed image URLs
-    var likedImages: [String : String] = [:] // Set to store liked images
-        
-        let collectionView: UICollectionView = {
-            let layout = UICollectionViewFlowLayout()
-            layout.scrollDirection = .vertical
-            layout.minimumLineSpacing = 5
-            layout.minimumInteritemSpacing = 5
-            let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-            collectionView.translatesAutoresizingMaskIntoConstraints = false
-            collectionView.backgroundColor = .white
-            return collectionView
-        }()
+    
+    var breedName: String = "" //Stores selected breed name from screen 1
+    var breedImagesArray: [String] = [] //Array to store breed image URLs
+    var likedImages: [String : String] = [:] //Store liked images
+    
+    let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 5
+        layout.minimumInteritemSpacing = 5
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.backgroundColor = .white
+        return collectionView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,24 +35,24 @@ class BreedImagesViewController: UIViewController {
     }
 }
 
-//UI config
+//MARK: - UI config.
 extension BreedImagesViewController {
     func setupCollectionView() {
-            collectionView.dataSource = self
-            collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.register(BreedImageCollectionViewCell.self, forCellWithReuseIdentifier: "ImageCell")
-            
-            view.addSubview(collectionView)
-            NSLayoutConstraint.activate([
-                collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
-                collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5),
-                collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-            ])
-        }
+        
+        view.addSubview(collectionView)
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
 }
 
-//fetch data
+//MARK: - fetch data
 extension BreedImagesViewController {
     func fetchBreedImageURLs() {
         guard let url = URL(string: "https://dog.ceo/api/breed/\(breedName)/images") else {
@@ -65,7 +65,6 @@ extension BreedImagesViewController {
             
             if let error = error {
                 print("Error fetching breed images: \(error.localizedDescription)")
-                // Handle error here (e.g., display an alert)
                 return
             }
             
@@ -81,19 +80,18 @@ extension BreedImagesViewController {
                     self.breedImagesArray = images
                     DispatchQueue.main.async {
                         //on successful data fetch put it on-screen
-//                        print(self.breedImagesArray)
+                        //                        print(self.breedImagesArray)
                         self.collectionView.reloadData()
                     }
                 }
             } catch {
                 print("Error decoding JSON: \(error.localizedDescription)")
-                // Handle error here (e.g., display an alert)
             }
         }.resume()
     }
 }
 
-//collectionview config.
+//MARK: - collectionview config.
 extension BreedImagesViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return breedImagesArray.count
@@ -104,16 +102,16 @@ extension BreedImagesViewController: UICollectionViewDataSource, UICollectionVie
         let imageUrl = breedImagesArray[indexPath.item]
         cell.imageView.loadImage(from: imageUrl)
         
-        // Set like button state based on likedImages set
+        //Set like button state
         cell.likeButton.isSelected = (likedImages[imageUrl] != nil)
         
-        // Assign tag to like button to identify which cell's button is tapped
+        //Assign tag to like button to identify which cell's button is tapped
         cell.likeButton.tag = indexPath.item
         cell.likeButton.addTarget(self, action: #selector(likeButtonTapped(_:)), for: .touchUpInside)
         return cell
     }
     
-    // Set size for collection view cell
+    //Set size for collection view cell
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.bounds.width - 5) / 2 // Adjust spacing
         return CGSize(width: width, height: width)
@@ -149,7 +147,6 @@ extension BreedImagesViewController: UICollectionViewDataSource, UICollectionVie
 extension BreedImagesViewController {
     @objc func likeButtonTapped(_ sender: UIButton) {
         let imageUrl = breedImagesArray[sender.tag]
-//        let breedName = breedNameForImage(at: sender.tag)
         
         if let _ = likedImages[imageUrl] {
             likedImages.removeValue(forKey: imageUrl)
@@ -157,17 +154,14 @@ extension BreedImagesViewController {
             likedImages[imageUrl] = breedName
         }
         
-        saveLikedImages() // Save liked images to UserDefaults
-        collectionView.reloadData() // Reload collection view to update like button states
+        saveLikedImages() //Save liked images to UserDefaults
+        collectionView.reloadData() //Reload collection view to update like button states
     }
-
-    // Function to save liked images to UserDefaults
     func saveLikedImages() {
         UserDefaults.standard.set(likedImages, forKey: "LikedImages")
-//        print(UserDefaults.standard.dictionary(forKey: "LikedImages"))
+        //        print(UserDefaults.standard.dictionary(forKey: "LikedImages"))
     }
-
-    // Function to load liked images from UserDefaults
+    
     func loadLikedImages() {
         if let likedImagesDictionary = UserDefaults.standard.dictionary(forKey: "LikedImages") as? [String: String] {
             likedImages = likedImagesDictionary

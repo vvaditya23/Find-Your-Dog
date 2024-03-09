@@ -8,14 +8,14 @@
 import UIKit
 
 class FavouritesViewController: UIViewController {
-
-    var likedImages: [String : String] = [:] // Array to store liked image URLs
+    
+    var likedImages: [String : String] = [:] // dict to store liked image URLs & breed name
     var pickerView: UIPickerView! // Dropdown menu for breed selection
-    var filterSwitch: UISwitch!
+    var filterSwitch: UISwitch! //enable/disable filter
     let filterLabel = UILabel()
     var breedData: [BreedName] = []
-    
     let noDataLabel = UILabel()
+    
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -27,22 +27,21 @@ class FavouritesViewController: UIViewController {
         return collectionView
     }()
     
-//    let breedListVC = BreedListViewController()
+    //    let breedListVC = BreedListViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Favourites"
         view.backgroundColor = .white
-//        breedData = breedListVC.breedsArray
-//        print(breedData)
-//        fetchLikedImages()
-//        print(likedImages)
+        //        breedData = breedListVC.breedsArray
+        //        print(breedData)
+        //        fetchLikedImages()
+        //        print(likedImages)
         setupPickerView()
         setupSwitchButton()
         setupCollectionView()
         setupNoDataLabel()
         fetchBreeds()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -53,20 +52,9 @@ class FavouritesViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         UserDefaults.standard.set(false, forKey: "ShouldShowTitle")
     }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
-//UI config.
+//MARK: - UI config.
 extension FavouritesViewController {
     func setupCollectionView() {
         collectionView.dataSource = self
@@ -106,9 +94,6 @@ extension FavouritesViewController {
             pickerView.heightAnchor.constraint(equalToConstant: 75),
             pickerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             pickerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            //                pickerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            //                pickerView.widthAnchor.constraint(equalToConstant: 200), // Adjust width as needed
-            //                pickerView.heightAnchor.constraint(equalToConstant: 200) // Adjust height as needed
         ])
     }
     
@@ -131,27 +116,25 @@ extension FavouritesViewController {
         ])
     }
     @objc func filterSwitchValueChanged(_ sender: UISwitch) {
-            pickerView.isUserInteractionEnabled = sender.isOn
-            pickerView.alpha = sender.isOn ? 1.0 : 0.5
+        pickerView.isUserInteractionEnabled = sender.isOn
+        pickerView.alpha = sender.isOn ? 1.0 : 0.5
         if !sender.isOn {
-                collectionView.reloadData()
+            collectionView.reloadData()
         } else {
             collectionView.reloadData()
         }
     }
 }
 
-//fetch data
+//MARK: - fetch data
 extension FavouritesViewController {
     func fetchLikedImages() {
-            // Retrieve liked images from UserDefaults or another storage method
         if let likedImagesArray = UserDefaults.standard.dictionary(forKey: "LikedImages") as? [String : String] {
-                likedImages = likedImagesArray
-            }
-        
+            likedImages = likedImagesArray
+        }
         collectionView.reloadData()
         noDataLabel.isHidden = !likedImages.isEmpty
-        }
+    }
     
     func fetchBreeds() {
         guard let url = URL(string: "https://dog.ceo/api/breeds/list/all") else {
@@ -180,10 +163,10 @@ extension FavouritesViewController {
                     // Sort breeds alphabetically
                     self.breedData.sort { $0.name < $1.name }
                     DispatchQueue.main.async {
-//                        self.favVC.breedData = self.breedsArray
+                        //                        self.favVC.breedData = self.breedsArray
                         //on successful data fetch put it on-screen
                         self.pickerView.reloadAllComponents()
-//                        print(self.breedsArray)
+                        //                        print(self.breedsArray)
                         
                     }
                 }
@@ -195,70 +178,66 @@ extension FavouritesViewController {
 }
 
 
-//collectionview config.
+//MARK: - collectionview config.
 extension FavouritesViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            if filterSwitch.isOn {
-                // If filter is enabled, only count the number of liked images that match the selected breed
-                let selectedBreedIndex = pickerView.selectedRow(inComponent: 0)
-                let selectedBreed = breedData[selectedBreedIndex].name
-                return likedImages.values.filter { $0 == selectedBreed }.count
-            } else {
-                // If filter is disabled, return the total count of liked images
-                return likedImages.count
-            }
+        if filterSwitch.isOn {
+            // If filter is enabled, only count the number of liked images that match the selected breed
+            let selectedBreedIndex = pickerView.selectedRow(inComponent: 0)
+            let selectedBreed = breedData[selectedBreedIndex].name
+            return likedImages.values.filter { $0 == selectedBreed }.count
+        } else {
+            // If filter is disabled, return the total count of liked images
+            return likedImages.count
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! BreedImageCollectionViewCell
         
-        func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! BreedImageCollectionViewCell
+        if filterSwitch.isOn {
+            // If filter is enabled, only display images of the selected breed
+            let selectedBreedIndex = pickerView.selectedRow(inComponent: 0)
+            let selectedBreed = breedData[selectedBreedIndex].name
+            let likedImagesArray = Array(likedImages.values)
+            let filteredImages = likedImagesArray.filter { $0 == selectedBreed }
             
-            if filterSwitch.isOn {
-                // If filter is enabled, only display images of the selected breed
-                let selectedBreedIndex = pickerView.selectedRow(inComponent: 0)
-                let selectedBreed = breedData[selectedBreedIndex].name
-                let likedImagesArray = Array(likedImages.values)
-                let filteredImages = likedImagesArray.filter { $0 == selectedBreed }
-                
-                // Get the breed name and image URL at the current index
-                let breedName = filteredImages[indexPath.item]
-                let imageUrl = likedImages.first { $0.value == breedName }?.key
-                
-                // Set the breed name as the title of the cell
-                cell.titleLabel.text = breedName
-                    
-                // Load image from URL
-                if let imageUrl = imageUrl {
-                    cell.imageView.loadImage(from: imageUrl)
-                }
-                if filteredImages.isEmpty {
-                    noDataLabel.isHidden = false
-                }
-            } else {
-                // If filter is disabled, display all the liked images
-                let keyValue = Array(likedImages)[indexPath.item]
-                        
-                // Extract image URL and breed name
-                let imageUrl = keyValue.key
-                let breedName = keyValue.value
-                            
-                // Set the breed name as the title of the cell
-                cell.titleLabel.text = breedName
-                        
-                // Load image from URL
+            // Get the breed name and image URL at the current index
+            let breedName = filteredImages[indexPath.item]
+            let imageUrl = likedImages.first { $0.value == breedName }?.key
+            
+            //update data onto UI
+            cell.titleLabel.text = breedName
+            if let imageUrl = imageUrl {
                 cell.imageView.loadImage(from: imageUrl)
             }
+            if filteredImages.isEmpty {
+                noDataLabel.isHidden = false
+            }
+        } else {
+            // If filter is disabled, display all the liked images
+            let keyValue = Array(likedImages)[indexPath.item]
             
-            cell.likeButton.isHidden = true
-            return cell
+            // Extract image URL and breed name
+            let imageUrl = keyValue.key
+            let breedName = keyValue.value
+            
+            //update data onto UI
+            cell.titleLabel.text = breedName
+            cell.imageView.loadImage(from: imageUrl)
         }
+        cell.likeButton.isHidden = true
+        return cell
+    }
     
     // Set size for collection view cell
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = (collectionView.bounds.width - 5) / 2 // Adjust spacing
+        let width = (collectionView.bounds.width - 5) / 2
         return CGSize(width: width, height: width)
     }
 }
 
+//MARK: - pickeriew config.
 extension FavouritesViewController: UIPickerViewDataSource, UIPickerViewDelegate {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -274,10 +253,8 @@ extension FavouritesViewController: UIPickerViewDataSource, UIPickerViewDelegate
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if filterSwitch.isOn {
-                    collectionView.reloadData()
-                }
-                let selectedBreed = breedData[row]
-//        print("Selected breed: \(selectedBreed)")
-        // Implement logic to filter collection view data based on selected breed
+            collectionView.reloadData()
+        }
+        let selectedBreed = breedData[row]
     }
 }

@@ -21,6 +21,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        let nav = UINavigationController(rootViewController: BreedListViewController())
 //        window?.rootViewController = nav
 //        window?.makeKeyAndVisible()
+        
+        //App starts with TabBarController as base controller and other VCs are then made rootVCs respectively
         let tabBarController = UITabBarController()
             
             let breedsViewController = BreedListViewController()
