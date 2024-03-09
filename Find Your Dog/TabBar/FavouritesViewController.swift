@@ -9,7 +9,7 @@ import UIKit
 
 class FavouritesViewController: UIViewController {
 
-    var likedImages: [String] = [] // Array to store liked image URLs
+    var likedImages: [String : String] = [:] // Array to store liked image URLs
     
     let noDataLabel = UILabel()
     let collectionView: UICollectionView = {
@@ -79,9 +79,10 @@ extension FavouritesViewController {
 extension FavouritesViewController {
     func fetchLikedImages() {
             // Retrieve liked images from UserDefaults or another storage method
-            if let likedImagesArray = UserDefaults.standard.array(forKey: "LikedImages") as? [String] {
+        if let likedImagesArray = UserDefaults.standard.dictionary(forKey: "LikedImages") as? [String : String] {
                 likedImages = likedImagesArray
             }
+//        print(<#T##items: Any...##Any#>)
         collectionView.reloadData()
         noDataLabel.isHidden = !likedImages.isEmpty
             // Here, you can optionally filter or sort the liked images based on breed
@@ -108,8 +109,21 @@ extension FavouritesViewController: UICollectionViewDataSource, UICollectionView
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCell", for: indexPath) as! BreedImageCollectionViewCell
-        let imageUrl = likedImages[indexPath.item]
+        // Extract key-value pair at the current index
+        let keyValue = Array(likedImages)[indexPath.item]
+                
+        // Extract image URL and breed name
+        let imageUrl = keyValue.key
+//        print("url: \(imageUrl)")
+        let breedName = keyValue.value
+//        print("breed: \(breedName)")
+                
+        // Set the breed name as the title of the cell
+//        cell.titleLabel.text = breedName
+                
+        // Load image from URL
         cell.imageView.loadImage(from: imageUrl)
+        
         cell.likeButton.isHidden = true
         return cell
     }

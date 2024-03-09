@@ -11,7 +11,7 @@ class BreedImagesViewController: UIViewController {
 
     var breedName: String = "" // Stores selected breed name
     var breedImagesArray: [String] = [] // Array to store breed image URLs
-    var likedImages: Set<String> = [] // Set to store liked images
+    var likedImages: [String : String] = [:] // Set to store liked images
         
         let collectionView: UICollectionView = {
             let layout = UICollectionViewFlowLayout()
@@ -105,7 +105,7 @@ extension BreedImagesViewController: UICollectionViewDataSource, UICollectionVie
         cell.imageView.loadImage(from: imageUrl)
         
         // Set like button state based on likedImages set
-        cell.likeButton.isSelected = likedImages.contains(imageUrl)
+        cell.likeButton.isSelected = (likedImages[imageUrl] != nil)
         
         // Assign tag to like button to identify which cell's button is tapped
         cell.likeButton.tag = indexPath.item
@@ -121,27 +121,56 @@ extension BreedImagesViewController: UICollectionViewDataSource, UICollectionVie
 }
 
 //logic for liking the image
+//extension BreedImagesViewController {
+//    @objc func likeButtonTapped(_ sender: UIButton) {
+//        let imageUrl = breedImagesArray[sender.tag]
+//        if likedImages.contains(imageUrl) {
+//            likedImages.remove(imageUrl)
+//        } else {
+//            likedImages.insert(imageUrl)
+//        }
+//        saveLikedImages() // Save liked images to UserDefaults
+//        collectionView.reloadData() // Reload collection view to update like button states
+//    }
+//
+//    // Function to save liked images to UserDefaults
+//    func saveLikedImages() {
+//        UserDefaults.standard.set(Array(likedImages), forKey: "LikedImages")
+//    }
+//
+//    // Function to load liked images from UserDefaults
+//    func loadLikedImages() {
+//        if let likedImagesArray = UserDefaults.standard.array(forKey: "LikedImages") as? [String] {
+//            likedImages = Set(likedImagesArray)
+//        }
+//    }
+//}
+
 extension BreedImagesViewController {
     @objc func likeButtonTapped(_ sender: UIButton) {
         let imageUrl = breedImagesArray[sender.tag]
-        if likedImages.contains(imageUrl) {
-            likedImages.remove(imageUrl)
+//        let breedName = breedNameForImage(at: sender.tag)
+        
+        if let _ = likedImages[imageUrl] {
+            likedImages.removeValue(forKey: imageUrl)
         } else {
-            likedImages.insert(imageUrl)
+            likedImages[imageUrl] = breedName
         }
+        
         saveLikedImages() // Save liked images to UserDefaults
         collectionView.reloadData() // Reload collection view to update like button states
     }
 
     // Function to save liked images to UserDefaults
     func saveLikedImages() {
-        UserDefaults.standard.set(Array(likedImages), forKey: "LikedImages")
+        UserDefaults.standard.set(likedImages, forKey: "LikedImages")
+//        print(UserDefaults.standard.dictionary(forKey: "LikedImages"))
     }
 
     // Function to load liked images from UserDefaults
     func loadLikedImages() {
-        if let likedImagesArray = UserDefaults.standard.array(forKey: "LikedImages") as? [String] {
-            likedImages = Set(likedImagesArray)
+        if let likedImagesDictionary = UserDefaults.standard.dictionary(forKey: "LikedImages") as? [String: String] {
+            likedImages = likedImagesDictionary
         }
     }
 }
