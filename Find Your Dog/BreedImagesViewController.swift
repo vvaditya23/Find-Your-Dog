@@ -26,6 +26,8 @@ class BreedImagesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = breedName
+        navigationController?.navigationBar.tintColor = .black
         view.backgroundColor = .white
         setupCollectionView()
         fetchBreedImageURLs()
