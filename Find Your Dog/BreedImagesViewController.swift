@@ -108,7 +108,7 @@ extension BreedImagesViewController: UICollectionViewDataSource, UICollectionVie
         
         // Assign tag to like button to identify which cell's button is tapped
         cell.likeButton.tag = indexPath.item
-        cell.likeButton.addTarget(self, action: #selector(likeButtonTapped(_:)), for: .touchUpInside)
+//        cell.likeButton.addTarget(self, action: #selector(likeButtonTapped(_:)), for: .touchUpInside)
         
         return cell
     }
@@ -117,17 +117,5 @@ extension BreedImagesViewController: UICollectionViewDataSource, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.bounds.width - 5) / 2 // Adjust spacing
         return CGSize(width: width, height: width)
-    }
-    
-    // Handle like button tap
-    @objc func likeButtonTapped(_ sender: UIButton) {
-        let imageUrl = breedImagesArray[sender.tag]
-        if likedImages.contains(imageUrl) {
-            likedImages.remove(imageUrl)
-        } else {
-            likedImages.insert(imageUrl)
-        }
-        print(likedImages)
-        collectionView.reloadData() // Reload collection view to update like button states
     }
 }
