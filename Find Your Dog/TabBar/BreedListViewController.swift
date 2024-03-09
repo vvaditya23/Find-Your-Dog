@@ -12,6 +12,8 @@ class BreedListViewController: UIViewController {
     let VC = UIViewController()
     let breedListTableView = UITableView()
     
+    let favVC = FavouritesViewController()
+    
     var breedsArray: [BreedName] = []
     
     override func viewDidLoad() {
@@ -79,9 +81,11 @@ extension BreedListViewController {
                     // Sort breeds alphabetically
                     self.breedsArray.sort { $0.name < $1.name }
                     DispatchQueue.main.async {
+//                        self.favVC.breedData = self.breedsArray
                         //on successful data fetch put it on-screen
                         self.breedListTableView.reloadData()
 //                        print(self.breedsArray)
+                        
                     }
                 }
             } catch {
