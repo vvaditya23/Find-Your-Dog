@@ -12,7 +12,7 @@ class BreedListViewController: UIViewController {
     let VC = UIViewController()
     let breedListTableView = UITableView()
     
-    var breedsArray: [Breed] = []
+    var breedsArray: [BreedName] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,7 +75,7 @@ extension BreedListViewController {
                 let json = try JSONSerialization.jsonObject(with: data, options: [])
                 if let jsonData = json as? [String: Any],
                    let breedsJSON = jsonData["message"] as? [String: Any] {
-                    self.breedsArray = breedsJSON.keys.map { Breed(name: $0) }
+                    self.breedsArray = breedsJSON.keys.map { BreedName(name: $0) }
                     // Sort breeds alphabetically
                     self.breedsArray.sort { $0.name < $1.name }
                     DispatchQueue.main.async {
@@ -105,6 +105,20 @@ extension BreedListViewController: UITableViewDelegate, UITableViewDataSource {
         cell.accessoryType = .disclosureIndicator
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+            let selectedBreedName = breedsArray[indexPath.row].name
+//            print("Selected breed: \(selectedBreedName)")
+            
+            // Instantiate BreedImagesViewController
+            let breedImagesVC = BreedImagesViewController()
+            
+            // Pass selected breed name to BreedImagesViewController
+            breedImagesVC.breedName = selectedBreedName
+            
+            // Push BreedImagesViewController onto navigation stack
+            navigationController?.pushViewController(breedImagesVC, animated: true)
+        }
     
 //    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 //        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: breedListTableView.frame.width, height: 50))
