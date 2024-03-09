@@ -15,14 +15,18 @@ class BreedListVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
+        setupBreedsTableView()
         fetchBreeds()
     }
 }
 
 //UI config
 extension BreedListVC {
-    func setupUI() {
+    func setupBreedsTableView() {
+        breedListTableView.dataSource = self
+        breedListTableView.delegate = self
+        breedListTableView.register(UITableViewCell.self, forCellReuseIdentifier: "BreedCell")
+        
         view.addSubview(breedListTableView)
         breedListTableView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -61,13 +65,28 @@ extension BreedListVC {
                    let breedsJSON = jsonData["message"] as? [String: Any] {
                     self.breedsArray = breedsJSON.keys.map { Breed(name: $0) }
                     DispatchQueue.main.async {
-                        // Update UI with fetched breeds
-                        print(self.breedsArray)
+                        //on successful data fetch put it on-screen
+                        self.breedListTableView.reloadData()
+//                        print(self.breedsArray)
                     }
                 }
             } catch {
                 print("Error decoding JSON: \(error.localizedDescription)")
             }
         }.resume()
+    }
+}
+
+//tableview config
+extension BreedListVC: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        breedsArray.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "BreedCell", for: indexPath)
+        let breed = breedsArray[indexPath.row]
+        cell.textLabel?.text = breed.name
+        return cell
     }
 }
