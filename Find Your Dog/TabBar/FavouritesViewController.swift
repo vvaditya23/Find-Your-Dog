@@ -10,6 +10,10 @@ import UIKit
 class FavouritesViewController: UIViewController {
 
     var likedImages: [String : String] = [:] // Array to store liked image URLs
+    var pickerView: UIPickerView! // Dropdown menu for breed selection
+    var filterSwitch: UISwitch!
+    let filterLabel = UILabel()
+    var breedData: [BreedName] = []
     
     let noDataLabel = UILabel()
     let collectionView: UICollectionView = {
@@ -23,14 +27,22 @@ class FavouritesViewController: UIViewController {
         return collectionView
     }()
     
+//    let breedListVC = BreedListViewController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Favourites"
         view.backgroundColor = .white
+//        breedData = breedListVC.breedsArray
+//        print(breedData)
 //        fetchLikedImages()
 //        print(likedImages)
+        setupPickerView()
+        setupSwitchButton()
         setupCollectionView()
         setupNoDataLabel()
+        fetchBreeds()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -57,18 +69,18 @@ class FavouritesViewController: UIViewController {
 //UI config.
 extension FavouritesViewController {
     func setupCollectionView() {
-            collectionView.dataSource = self
-            collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.delegate = self
         collectionView.register(BreedImageCollectionViewCell.self, forCellWithReuseIdentifier: "ImageCell")
-            
-            view.addSubview(collectionView)
-            NSLayoutConstraint.activate([
-                collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
-                collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5),
-                collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-            ])
-        }
+        
+        view.addSubview(collectionView)
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: filterSwitch.bottomAnchor, constant: 5),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 5),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -5),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
     
     func setupNoDataLabel() {
         view.addSubview(noDataLabel)
@@ -78,6 +90,50 @@ extension FavouritesViewController {
         noDataLabel.numberOfLines = 0
         noDataLabel.text = "No favourites, checkout some breeds"
     }
+    
+    func setupPickerView() {
+        pickerView = UIPickerView()
+        pickerView.translatesAutoresizingMaskIntoConstraints = false
+        pickerView.backgroundColor = .clear
+        pickerView.delegate = self
+        pickerView.dataSource = self
+        //            pickerView.isHidden = true // Hide initially
+        pickerView.alpha = 0.5
+        view.addSubview(pickerView)
+        
+        // Position the dropdown menu in the center of the screen
+        NSLayoutConstraint.activate([
+            pickerView.heightAnchor.constraint(equalToConstant: 75),
+            pickerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            pickerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            //                pickerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            //                pickerView.widthAnchor.constraint(equalToConstant: 200), // Adjust width as needed
+            //                pickerView.heightAnchor.constraint(equalToConstant: 200) // Adjust height as needed
+        ])
+    }
+    
+    func setupSwitchButton() {
+        filterSwitch = UISwitch()
+        filterSwitch.translatesAutoresizingMaskIntoConstraints = false
+        filterLabel.translatesAutoresizingMaskIntoConstraints = false
+        filterSwitch.addTarget(self, action: #selector(filterSwitchValueChanged(_:)), for: .valueChanged)
+        
+        filterLabel.text = "Enable/Disable filter"
+        
+        view.addSubview(filterSwitch)
+        view.addSubview(filterLabel)
+        
+        NSLayoutConstraint.activate([
+            filterSwitch.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filterSwitch.topAnchor.constraint(equalTo: pickerView.bottomAnchor, constant: 10),
+            filterLabel.centerYAnchor.constraint(equalTo: filterSwitch.centerYAnchor),
+            filterLabel.trailingAnchor.constraint(equalTo: filterSwitch.leadingAnchor, constant: -10)
+        ])
+    }
+    @objc func filterSwitchValueChanged(_ sender: UISwitch) {
+            pickerView.isUserInteractionEnabled = sender.isOn
+            pickerView.alpha = sender.isOn ? 1.0 : 0.5
+        }
 }
 
 //fetch data
@@ -87,24 +143,52 @@ extension FavouritesViewController {
         if let likedImagesArray = UserDefaults.standard.dictionary(forKey: "LikedImages") as? [String : String] {
                 likedImages = likedImagesArray
             }
-//        print(<#T##items: Any...##Any#>)
+        
         collectionView.reloadData()
         noDataLabel.isHidden = !likedImages.isEmpty
-            // Here, you can optionally filter or sort the liked images based on breed
-            // For simplicity, let's assume the likedImages array is already sorted or filtered
-            displayLikedImages()    //not required
         }
     
-    //not required
-    func displayLikedImages() {
-            // Create a collection view or table view to display the liked images
-            // Populate the collection view or table view with the liked images
+    func fetchBreeds() {
+        guard let url = URL(string: "https://dog.ceo/api/breeds/list/all") else {
+            print("Invalid URL")
+            return
         }
-
-        // Implement sorting functionality if needed
-        // For example, you can provide options to sort by breed
-        // Implement logic to sort the liked images based on the selected criteria
+        
+        URLSession.shared.dataTask(with: url) { [weak self] (data, response, error) in
+            guard let self = self else { return }
+            
+            if let error = error {
+                print("Error fetching breeds: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let data = data else {
+                print("No data received")
+                return
+            }
+            
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                if let jsonData = json as? [String: Any],
+                   let breedsJSON = jsonData["message"] as? [String: Any] {
+                    self.breedData = breedsJSON.keys.map { BreedName(name: $0) }
+                    // Sort breeds alphabetically
+                    self.breedData.sort { $0.name < $1.name }
+                    DispatchQueue.main.async {
+//                        self.favVC.breedData = self.breedsArray
+                        //on successful data fetch put it on-screen
+                        self.pickerView.reloadAllComponents()
+//                        print(self.breedsArray)
+                        
+                    }
+                }
+            } catch {
+                print("Error decoding JSON: \(error.localizedDescription)")
+            }
+        }.resume()
+    }
 }
+
 
 //collectionview config.
 extension FavouritesViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -137,5 +221,25 @@ extension FavouritesViewController: UICollectionViewDataSource, UICollectionView
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.bounds.width - 5) / 2 // Adjust spacing
         return CGSize(width: width, height: width)
+    }
+}
+
+extension FavouritesViewController: UIPickerViewDataSource, UIPickerViewDelegate {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return breedData.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return breedData[row].name
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        let selectedBreed = breedData[row]
+        print("Selected breed: \(selectedBreed)")
+        // Implement logic to filter collection view data based on selected breed
     }
 }
