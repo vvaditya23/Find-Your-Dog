@@ -31,6 +31,7 @@ class BreedImagesViewController: UIViewController {
         view.backgroundColor = .white
         setupCollectionView()
         fetchBreedImageURLs()
+        loadLikedImages()
     }
 }
 
@@ -108,8 +109,7 @@ extension BreedImagesViewController: UICollectionViewDataSource, UICollectionVie
         
         // Assign tag to like button to identify which cell's button is tapped
         cell.likeButton.tag = indexPath.item
-//        cell.likeButton.addTarget(self, action: #selector(likeButtonTapped(_:)), for: .touchUpInside)
-        
+        cell.likeButton.addTarget(self, action: #selector(likeButtonTapped(_:)), for: .touchUpInside)
         return cell
     }
     
@@ -117,5 +117,31 @@ extension BreedImagesViewController: UICollectionViewDataSource, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = (collectionView.bounds.width - 5) / 2 // Adjust spacing
         return CGSize(width: width, height: width)
+    }
+}
+
+//logic for liking the image
+extension BreedImagesViewController {
+    @objc func likeButtonTapped(_ sender: UIButton) {
+        let imageUrl = breedImagesArray[sender.tag]
+        if likedImages.contains(imageUrl) {
+            likedImages.remove(imageUrl)
+        } else {
+            likedImages.insert(imageUrl)
+        }
+        saveLikedImages() // Save liked images to UserDefaults
+        collectionView.reloadData() // Reload collection view to update like button states
+    }
+
+    // Function to save liked images to UserDefaults
+    func saveLikedImages() {
+        UserDefaults.standard.set(Array(likedImages), forKey: "LikedImages")
+    }
+
+    // Function to load liked images from UserDefaults
+    func loadLikedImages() {
+        if let likedImagesArray = UserDefaults.standard.array(forKey: "LikedImages") as? [String] {
+            likedImages = Set(likedImagesArray)
+        }
     }
 }
